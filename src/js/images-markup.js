@@ -1,7 +1,7 @@
 export default function imagesMarkup(data) {
     return data.hits.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => {
         return `<div class="photo-card">
-                    <a href="${largeImageURL}">
+                    <a href="${largeImageURL}" class="gallery-link">
                         <img src="${webformatURL}" alt="${tags}" class="image" loading="lazy" />
                     </a>
                     <div class="info">

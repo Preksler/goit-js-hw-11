@@ -24,6 +24,10 @@ img {
   height: auto;
 }
 
+p {
+  margin: 0;
+}
+
 .is-hidden {
   display: none;
 }
@@ -44,6 +48,7 @@ img {
 }
 
 .photo-card {
+  position: relative;
   width: calc(25% - 16px);
   margin: 8px;
   padding: 8px;
@@ -54,10 +59,26 @@ img {
 }
 
 .info {
+  font-size: 14px;
+  max-width: 100%;
+  color: #fff;
+  background-color: rgba(47, 48, 58, 0.8);
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
   display: flex;
+  padding: 8px;
+}
+
+.info-item:not(:last-child) {
+  margin-right: 8px; 
 }
 
 .image {
+  margin-left: auto;
+  margin-right: auto;
+  height: 300px;
   object-fit: cover;
 }
 

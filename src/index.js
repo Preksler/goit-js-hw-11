@@ -50,7 +50,7 @@ function appendImagesMurkup(data) {
         Notify.failure(`We're sorry, but you've reached the end of search results.`);
         return;
     }
-    // lightbox.refresh();
+    lightbox.refresh();
     refs.galleryList.insertAdjacentHTML('beforeend', imagesMarkup(data));
 }
 
