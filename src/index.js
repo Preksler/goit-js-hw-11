@@ -11,12 +11,6 @@ const refs = {
     galleryList: document.querySelector('.gallery'),
 };
 
-const lightbox = new SimpleLightbox('.gallery a', {
-    caption: true,
-    captionsData: 'alt',
-    captionDelay: 250,
-});
-
 const imagesApiService = new ImagesApiService();
 const loadMoreBtn = new LoadMoreBtn({ selector: '.load-more', hidden: true });
 
@@ -32,8 +26,13 @@ function onSearch(e) {
     imagesApiService.fetchImages()
         .then(({ data }) => {
             clearImagesContainer();
-            appendImagesMurkup(data)
-            loadMoreBtn.enable();
+            imagesApiService.setHits(data.totalHits);
+            appendImagesMurkup(data);
+            if(data.totalHits > 0) {
+                loadMoreBtn.enable();
+            } else {
+                loadMoreBtn.hide();
+            }
         })
         .catch(err => {console.log(err);});
 }
@@ -45,24 +44,43 @@ function appendImagesMurkup(data) {
     if (imagesApiService.getPage() === 2 && data.totalHits !== 0) {
         Notify.success(`Hooray! We found ${data.totalHits} images.`);
     }
-    if (data.totalHits !== 0 && data.hits.length === 0) {
+ 
+    if (imagesApiService.totalHits <= 0 && data.totalHits !== 0) {
         loadMoreBtn.hide();
         Notify.failure(`We're sorry, but you've reached the end of search results.`);
-        return;
     }
-    lightbox.refresh();
     refs.galleryList.insertAdjacentHTML('beforeend', imagesMarkup(data));
+    lightBox();
 }
 
 function onLoadMore() {
     loadMoreBtn.disable();
+    imagesApiService.decrementHits();
     imagesApiService.fetchImages()
         .then(({ data }) => {
             appendImagesMurkup(data);
             loadMoreBtn.enable();
+            scrollBottom();
         });
+    lightBox().refresh();
 }
 
 function clearImagesContainer() {
     refs.galleryList.innerHTML = '';
+}
+
+function lightBox() {
+    return new SimpleLightbox('.gallery a', {
+        caption: true,
+        captionsData: 'alt',
+        captionDelay: 250,
+    });
+}
+
+function scrollBottom() {
+      const { height: cardHeight } = refs.galleryList.firstElementChild.getBoundingClientRect();
+        window.scrollBy({
+        top: cardHeight * 2.8,
+        behavior: "smooth",
+        });
 }
